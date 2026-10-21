@@ -1,0 +1,15 @@
+build_cmd = "auto"
+run_cmd = "auto"
+test_cmd = "auto"
+check_cmd = "auto"
+clean_cmd = "auto"
+build_and_run_cmd = "auto"
+
+[[projects]]
+name = "Rust"
+source_ext = "rs"
+project_dir = "."
+build_cmd = "cargo build"
+run_cmd   = "cargo run"
+check_cmd = "cargo check"
+clean_cmd = "cargo clean"
