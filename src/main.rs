@@ -4,6 +4,7 @@ use std::{
     path::Path,
     process
 };
+use lantern::command::run_command;
 use lantern::{
     Mode, 
     command, 
@@ -19,6 +20,7 @@ fn main() {
         Ok(v) => v,
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
             let default_cnf = Config {
+                projects: Vec::new(),
                 build_cmd: "auto".to_string(),
                 run_cmd: "auto".to_string(),
                 test_cmd: "auto".to_string(),
@@ -43,7 +45,10 @@ fn main() {
     };
     let config: Option<Config> = match toml::from_str(&cnf) {
         Ok(v) => Some(v),
-        Err(_) => None,
+        Err(e) => {
+            eprintln!("Failed to parse {}: {}", config_file, e);
+            None
+        }
     };
 
     let mode: Mode = match args.get(1).map(String::as_str) {
@@ -60,6 +65,29 @@ fn main() {
         }
     };
     let evidence = detect::project_evidence();
+    if let Some(config) = &config {
+        for project in &config.projects {
+            match mode {
+                Mode::Build => {
+                    _ = run_command(&project.build_cmd);
+                },
+                Mode::Run => {
+                    _ = run_command(&project.run_cmd);
+                },
+                Mode::Check => {
+                    _ = run_command(&project.check_cmd);
+                },
+                Mode::Clean => {
+                    _ = run_command(&project.clean_cmd);
+                }
+                Mode::RunAndBuild => {
+                    _ = run_command(&project.build_cmd);
+                    _ = run_command(&project.run_cmd);
+                }
+            }
+        }
+        process::exit(1);
+    }
     let projects = detect::detect(
         Path::new("."),
         &evidence,    

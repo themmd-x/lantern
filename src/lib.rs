@@ -11,6 +11,7 @@ pub enum Mode {
 }
 #[derive(Deserialize, Serialize)]
 pub struct Config {
+    pub projects: Vec<detect::Project>,
     pub build_cmd: String,
     pub run_cmd: String,
     pub test_cmd: String,
