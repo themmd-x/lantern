@@ -20,7 +20,6 @@ fn main() {
         Ok(v) => v,
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
             let default_cnf = Config {
-                projects: Vec::new(),
                 build_cmd: "auto".to_string(),
                 run_cmd: "auto".to_string(),
                 test_cmd: "auto".to_string(),
